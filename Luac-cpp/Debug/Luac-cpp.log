@@ -1,0 +1,3 @@
+﻿  reader.cpp
+C:\Users\37806\OneDrive\codes\Luac-cpp\Luac-cpp\source\reader.cpp(76,20): warning C4244: “=”: 从“uint64_t”转换到“uint8_t”，可能丢失数据
+  Luac-cpp.vcxproj -> C:\Users\37806\OneDrive\codes\Luac-cpp\Debug\Luac-cpp.exe
