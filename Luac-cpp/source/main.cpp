@@ -14,7 +14,7 @@ int main()
 	tr.TestMain();
 
 	/* Read .lua file */
-	const std::string input_file = "C:/Users/37806/OneDrive/codes/Luac-cpp/Luac-cpp/resource/luac.5.3.4.out";
+	const std::string input_file = "C:/Users/37806/OneDrive/codes/Luac-cpp/Luac-cpp/resource/hello_world_withvar.luac";
 	ifstream infile(input_file, ios_base::binary);
 
 	infile.seekg(0, std::ios_base::end);

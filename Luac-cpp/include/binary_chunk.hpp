@@ -73,6 +73,28 @@ namespace luaccpp
 		STRING VarName;
 		uint32_t StartPC;
 		uint32_t EndPC;
+
+		LocVar() = default;
+
+		LocVar(STRING var_name_, uint32_t start_pc_, uint32_t end_pc_):
+			VarName(var_name_), StartPC(start_pc_), EndPC(end_pc_)
+		{  }
+
+		LocVar(LocVar&& loc_var_r) noexcept:
+			VarName(std::move(loc_var_r.VarName)), StartPC(loc_var_r.StartPC), EndPC(loc_var_r.EndPC)
+		{  }
+
+		LocVar& 
+		operator=(LocVar&& loc_var_r) noexcept
+		{
+			if (&loc_var_r == this)
+				return *this;
+
+			this->VarName = std::move(loc_var_r.VarName);
+			this->StartPC = loc_var_r.StartPC;
+			this->EndPC = loc_var_r.EndPC;
+			return *this;
+		}
 	};
 
 	using LocVar_ARRAY = std::vector<LocVar>;
@@ -97,6 +119,42 @@ namespace luaccpp
 		WORD32_ARRAY LineInfo;					// Line number table
 		LocVar_ARRAY LocVars;					// Local variable table
 		STRING_ARRAY UpvalueNames;
+
+		Prototype() = default;
+		Prototype(Prototype&& ptt_r) noexcept:
+			Source(std::move(ptt_r.Source)),
+			LineDefined(ptt_r.LineDefined),
+			LastLineDefined(ptt_r.LastLineDefined),
+			NumParams(ptt_r.NumParams),
+			IsVararg(ptt_r.IsVararg),
+			MaxStackSize(ptt_r.MaxStackSize),
+			Code(std::move(ptt_r.Code)),
+			Upvalues(std::move(ptt_r.Upvalues)),
+			Protos(std::move(ptt_r.Protos)),
+			LineInfo(std::move(ptt_r.LineInfo)),
+			LocVars(std::move(ptt_r.LocVars)),
+			UpvalueNames(std::move(ptt_r.UpvalueNames))
+		{ }
+
+		Prototype& 
+		operator=(Prototype&& ptt_r) noexcept
+		{
+			if (&ptt_r == this)
+				return *this;
+
+			Source = std::move(ptt_r.Source);
+			LineDefined = ptt_r.LineDefined;
+			LastLineDefined = ptt_r.LastLineDefined;
+			NumParams = ptt_r.NumParams;
+			IsVararg = ptt_r.IsVararg;
+			MaxStackSize = ptt_r.MaxStackSize;
+			Code = std::move(ptt_r.Code);
+			Upvalues = std::move(ptt_r.Upvalues);
+			Protos = std::move(ptt_r.Protos);
+			LineInfo = std::move(ptt_r.LineInfo);
+			LocVars = std::move(ptt_r.LocVars);
+			UpvalueNames = std::move(ptt_r.UpvalueNames);
+		}
 	};
 
 	using Prototype_ARRAY = std::vector<Prototype>;

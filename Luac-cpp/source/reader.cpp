@@ -85,7 +85,8 @@ Reader::ReadString()
 BYTE_ARRAY 
 Reader::ReadBytes(unsigned int n)
 {
-	// +Todo: check if there are enough bytes
+	// Todo: Alert if no enough byte?
+	// n = n > data_.size() ? data_.size() : n;
 	BYTE_ARRAY res(data_.begin(), data_.begin() + n);
 	data_.erase(data_.begin(), data_.begin() + n);
 	return res;
@@ -164,7 +165,6 @@ Reader::ReadProtos(STRING parent_source)
 	Prototype_ARRAY res;
 	auto pro_num = ReadUint32();
 	for (size_t i = 0; i < pro_num; ++i)
-		// Todo: Check move or copy
 		res.push_back(ReadProto(parent_source));
 	return res;
 }
@@ -247,13 +247,13 @@ Reader::ReadLocVars()
 	auto loc_var_num = ReadUint32();
 	for (size_t i = 0; i < loc_var_num; ++i)
 	{
-		LocVar* loc_var = new LocVar;
-		// Todo: Check move or copy
-		loc_var->VarName = std::move(ReadString());
-		loc_var->StartPC = ReadUint32();
-		loc_var->EndPC = ReadUint32();
-		// Todo: Check move or copy
-		res.emplace_back(std::move(*loc_var));
+		// Attention: No guarantee for sequential execute so don't do:
+		// LocVar(ReadString(), ReadUint32(), ReadUint32());
+		auto varname = ReadString();
+		auto startpc = ReadUint32();
+		auto endpc = ReadUint32();
+		auto loc_var = LocVar(std::move(varname), startpc, endpc);
+		res.emplace_back(std::move(loc_var));
 	}
 
 	return res;
@@ -265,8 +265,7 @@ Reader::ReadUpvalueNames()
 	STRING_ARRAY res;
 	auto name_num = ReadUint32();
 	for (size_t i = 0; i < name_num; ++i)
-		// res.emplace_back(std::move(ReadString()));
-		// Todo: Check move or copy
+		// Move-op
 		res.emplace_back(ReadString());
 	return res;
 }
