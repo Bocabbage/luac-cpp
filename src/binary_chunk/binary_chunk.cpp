@@ -8,7 +8,7 @@ luaccpp::Undump(BYTE_ARRAY data)
 	auto reader = std::make_unique<Reader>(data);
 	bool check_header_success = reader->CheckHeader();
 	if (!check_header_success)
-		return Prototype();
+		return {};
 	reader->ReadByte();			// Ignore the Upvalue-num
 	return reader->ReadProto("");
 }
