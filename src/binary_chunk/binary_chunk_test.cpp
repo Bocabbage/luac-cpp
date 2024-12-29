@@ -3,7 +3,7 @@
 using std::cout;
 using std::endl;
 
-bool luaccpp::TestReader::TestMain()
+bool luac::TestReader::TestMain()
 {
 	/* Reader-class UT */
 	// ReadByte

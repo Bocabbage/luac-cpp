@@ -1,13 +1,13 @@
 #include "Reader.hpp"
 #include <cstring>
-using namespace luaccpp;
+using namespace luac;
 
 
 // Read a byte from the data_ stream
 uint8_t 
 Reader::ReadByte()
 {
-	uint8_t res = data_[0];
+	const uint8_t res = data_[0];
 	data_.erase(data_.begin());
 	return res;
 }
@@ -135,32 +135,32 @@ Reader::CheckHeader()
 }
 
 Prototype 
-Reader::ReadProto(STRING parent_source)
+Reader::ReadProto(const STRING& parent_source)
 {
 	auto source = ReadString();
 	if (source.empty())
 		source = parent_source;
 	Prototype res;
-	res.LineDefined = ReadUint32();
-	res.LastLineDefined = ReadUint32();
-	res.NumParams = ReadByte();
-	res.IsVararg = ReadByte();
-	res.MaxStackSize = ReadByte();
-	res.Code = ReadCode();
-	res.Constants = ReadConstants();
-	res.Upvalues = ReadUpValues();
+	res.line_defined = ReadUint32();
+	res.last_line_defined = ReadUint32();
+	res.num_params = ReadByte();
+	res.is_vararg = ReadByte();
+	res.max_stack_size = ReadByte();
+	res.code = ReadCode();
+	res.constants = ReadConstants();
+	res.upvalues = ReadUpValues();
 
-	res.Protos = ReadProtos(source);
+	res.protos = ReadProtos(source);
 
-	res.LineInfo = ReadLineInfo();
-	res.LocVars = ReadLocVars();
-	res.UpvalueNames = ReadUpvalueNames();
+	res.line_info = ReadLineInfo();
+	res.loc_vars = ReadLocVars();
+	res.upvalue_names = ReadUpValueNames();
 
 	return res;
 }
 
 Prototype_ARRAY 
-Reader::ReadProtos(STRING parent_source)
+Reader::ReadProtos(const STRING& parent_source)
 {
 	Prototype_ARRAY res;
 	auto pro_num = ReadUint32();
@@ -173,19 +173,19 @@ Constant
 Reader::ReadConstant()
 {
 	Constant res;
-	res.Tag = ReadByte();
-	switch (res.Tag)
+	res.tag = ConstantTagFromByte(ReadByte());
+	switch (res.tag)
 	{
-	case TAG_BOOLEAN:
-		res.Const = (ReadByte() == 1); break;
-	case TAG_INTEGER:
-		res.Const = ReadLuaInteger(); break;
-	case TAG_SHORT_STR:
-	case TAG_LONG_STR:
-		res.Const = ReadString(); break;
-	case TAG_NIL:
-	default:
-		res.Const = nullptr;
+		case ConstantTag::BOOLEAN:
+			res.constant = (ReadByte() == 1); break;
+		case ConstantTag::INTEGER:
+			res.constant = ReadLuaInteger(); break;
+		case ConstantTag::SHORT_STR:
+		case ConstantTag::LONG_STR:
+			res.constant = ReadString(); break;
+		case ConstantTag::NIL:
+		default:
+			res.constant = nullptr;
 	}
 	return res;
 }
@@ -214,16 +214,16 @@ Reader::ReadCode()
 	return res;
 }
 
-Upvalue_ARRAY
+UpValue_ARRAY
 Reader::ReadUpValues()
 {
-	std::vector<Upvalue> res;
+	std::vector<UpValue> res;
 	auto upvalue_num = ReadUint32();
 	for (size_t i = 0; i < upvalue_num; ++i)
 	{
-		Upvalue upv;
-		upv.Idx = ReadByte();
-		upv.Instack = ReadByte();
+		UpValue upv;
+		upv.idx = ReadByte();
+		upv.in_stack = ReadByte();
 		res.push_back(upv);
 	}
 
@@ -260,7 +260,7 @@ Reader::ReadLocVars()
 }
 
 STRING_ARRAY 
-Reader::ReadUpvalueNames()
+Reader::ReadUpValueNames()
 {
 	STRING_ARRAY res;
 	auto name_num = ReadUint32();

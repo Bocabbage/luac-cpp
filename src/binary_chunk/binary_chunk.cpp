@@ -1,14 +1,13 @@
 #include "binary_chunk.hpp"
 #include "reader.hpp"
-using namespace luaccpp;
+using namespace luac;
 
 Prototype 
-luaccpp::Undump(BYTE_ARRAY data)
+luac::Undump(const BYTE_ARRAY& data)
 {
-	auto reader = std::make_unique<Reader>(data);
-	bool check_header_success = reader->CheckHeader();
-	if (!check_header_success)
+	const auto reader = std::make_unique<Reader>(data);
+	if (const bool check_header_success = reader->CheckHeader(); !check_header_success)
 		return {};
-	reader->ReadByte();			// Ignore the Upvalue-num
+	reader->ReadByte();			// Ignore the UpValue-num
 	return reader->ReadProto("");
 }

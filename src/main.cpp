@@ -5,6 +5,7 @@
 #include "binary_chunk/binary_chunk_test.hpp"
 
 using namespace std;
+using namespace luac;
 
 /**
  * 	todo 临时 demo，后续需移除
@@ -12,7 +13,7 @@ using namespace std;
 int main()
 {
 	/* Reader-class UT */
-	luaccpp::TestReader::TestMain();
+	TestReader::TestMain();
 
 	/* Read .lua file */
     // todo
@@ -23,10 +24,10 @@ int main()
 	// size_t length = infile.tellg();
 	infile.seekg(0, std::ios_base::beg);
 
-	luaccpp::BYTE_ARRAY buffer(
+	BYTE_ARRAY buffer(
 		(istreambuf_iterator<char>(infile)), // The() is necessary here
 		istreambuf_iterator<char>());
-	auto prof = luaccpp::Undump(buffer);
+	auto prof = Undump(buffer);
 	cout << "for breakpoint" << endl;
 
 }
